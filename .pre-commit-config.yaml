@@ -1,12 +1,22 @@
+default_stages: [pre-commit]
 repos:
+  # Ruff formatting and linting
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.9
+    rev: v0.12.2
     hooks:
       - id: ruff
+        name: Linting (Ruff)
         args: [--fix]
+        files: \.py$
       - id: ruff-format
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+        name: Formatting (Ruff)
+        files: \.py$
+
+  # Commit message valudation
+  - repo: local
     hooks:
-      - id: trailing-whitespace  # Removes trailing spaces
-      - id: end-of-file-fixer    # Adds newline at end of files
+      - id: validate-commit-message
+        name: Commit message validation
+        entry: python tools/validate-commit-message.py
+        language: system
+        stages: [commit-msg]

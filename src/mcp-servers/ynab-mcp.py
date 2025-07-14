@@ -49,12 +49,25 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
 
     if name == "get_account_balances":
         try:
-            url = f"{BASE_URL}/budgets/{YNAB_BUDGET_ID}/accounts"
-            response = requests.get(url, headers=headers)
-            response.raise_for_status()
-            data = response.json()
+            # Fetch accounts
+            url_accounts = f"{BASE_URL}/budgets/{YNAB_BUDGET_ID}/accounts"
+            response_accounts = requests.get(url_accounts, headers=headers)
+            response_accounts.raise_for_status()
+            data_accounts = response_accounts.json()
 
-            accounts = data["data"]["accounts"]
+            accounts = data_accounts["data"]["accounts"]
+
+            # Fetch currency code from budget summary
+            url_budget = f"{BASE_URL}/budgets/{YNAB_BUDGET_ID}"
+            response_budget = requests.get(url_budget, headers=headers)
+            response_budget.raise_for_status()
+            data_budget = response_budget.json()
+            currency_code = (
+                data_budget["data"]["budget"]
+                .get("currency_format", {})
+                .get("iso_code", "USD")
+            )
+
             result = "💰 **YNAB Account Balances:**\n\n"
 
             total_balance = 0
@@ -62,9 +75,11 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
                 if not account.get("closed", False):  # Only show open accounts
                     balance = account["balance"] / 1000  # YNAB stores in milliunits
                     total_balance += balance
-                    result += f"• **{account['name']}**: ${balance:,.2f}\n"
+                    result += (
+                        f"• **{account['name']}**: {balance:,.2f} {currency_code}\n"
+                    )
 
-            result += f"\n**Total Balance**: ${total_balance:,.2f}"
+            result += f"\n**Total Balance**: {total_balance:,.2f} {currency_code}"
 
             return [TextContent(type="text", text=result)]
 

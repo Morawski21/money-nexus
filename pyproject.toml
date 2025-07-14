@@ -1,29 +1,27 @@
-[project]
+[tool.poetry]
 name = "money-nexus"
 version = "0.1.0"
 description = "Agentic AI application for market research & investment strategies."
-authors = [
-    {name = "Jakub Morawski",email = "morawski.grk@gmail.com"}
-]
+authors = ["Jakub Morawski <morawski.grk@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
-dependencies = [
-    "langgraph (>=0.5.1,<0.6.0)",
-    "python-dotenv (>=1.1.1,<2.0.0)",
-    "langchain (>=0.3.26,<0.4.0)",
-    "requests (>=2.32.4,<3.0.0)",
-    "langchain-openai (>=0.3.27,<0.4.0)",
-    "pydantic (>=2.11.7,<3.0.0)"
-]
-
-[tool.poetry]
 package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+langgraph = ">=0.5.1,<0.6.0"
+python-dotenv = ">=1.1.1,<2.0.0"
+langchain = ">=0.3.26,<0.4.0"
+requests = ">=2.32.4,<3.0.0"
+langchain-openai = ">=0.3.27,<0.4.0"
+pydantic = ">=2.11.7,<3.0.0"
+mcp = ">=1.11.0,<2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
 pre-commit = "^4.2.0"
 ruff = "^0.12.2"
 nbdime = "^4.0.2"
+huggingface-hub = {extras = ["mcp"], version = "^0.33.4"}
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
